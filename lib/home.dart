@@ -9,6 +9,8 @@ import 'package:localpkg/functions.dart';
 import 'package:localpkg/logger.dart' as logger;
 import 'package:localpkg/widgets.dart';
 import 'package:http/http.dart' as http;
+import 'package:trafficlightsimulator/settings.dart';
+import 'package:trafficlightsimulator/util.dart';
 
 class Home extends StatefulWidget {
   final bool home;
@@ -53,6 +55,7 @@ class _HomeState extends State<Home> {
   Uri? url;
   Map<String, String>? headers;
   Map? body = {};
+  Map settings = {};
   Ping? ping;
 
   bool ready = false;
@@ -85,7 +88,8 @@ class _HomeState extends State<Home> {
     start();
   }
 
-  void start() {
+  void start() async {
+    print("loading verbose...");
     print("starting...");
     ready = true;
     print("application ready");
@@ -113,8 +117,10 @@ class _HomeState extends State<Home> {
     }
   }
 
-  void refresh() {
+  Future<void> refresh() async {
     print("refreshing...", add: false);
+    settings = await getSettings();
+    verbose = settings["verbose"];
     switch (method) {
       case 'GET':
         useUrl = true;
@@ -179,7 +185,9 @@ class _HomeState extends State<Home> {
         centerTitle: true,
         leading: widget.home == true ? IconButton(
           icon: Icon(Icons.settings),
-          onPressed: () {},
+          onPressed: () {
+            navigate(context: context, page: Settings());
+          },
         ) : IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {

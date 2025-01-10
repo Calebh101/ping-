@@ -37,8 +37,9 @@ dependencies:
 
   localpkg:
     git:
-      url: https://github.com/Calebh101/localpkg-flutter
+      url: https://github.com/Calebh101/localpkg-flutter.git
       ref: main
+  shared_preferences: ^2.3.5
 
 dev_dependencies:
   flutter_test:

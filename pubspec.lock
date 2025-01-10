@@ -357,8 +357,8 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "7b58b13c8efefba2f18f19a8b7bff4a4cdd4738c"
-      url: "https://github.com/Calebh101/localpkg-flutter"
+      resolved-ref: "9821a7d6c68f8fcd2f59a39f172e0f872805c908"
+      url: "https://github.com/Calebh101/localpkg-flutter.git"
     source: git
     version: "1.0.0"
   matcher:
@@ -514,7 +514,7 @@ packages:
     source: hosted
     version: "5.0.2"
   shared_preferences:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: shared_preferences
       sha256: a752ce92ea7540fc35a0d19722816e04d0e72828a4200e83a98cf1a1eb524c9a
