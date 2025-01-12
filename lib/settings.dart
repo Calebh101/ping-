@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:localpkg/dialogue.dart';
 import 'package:localpkg/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:trafficlightsimulator/util.dart';
-import 'package:trafficlightsimulator/var.dart';
+import 'package:ping/util.dart';
+import 'package:ping/var.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -45,27 +45,72 @@ class _SettingsState extends State<Settings> {
           },
         ),
       ),
-      body: settings == null ? Center(child: CircularProgressIndicator()) : Column(
-        children: [
-          AboutSettings(context: context, version: version, beta: beta, about: description, instructionsAction: () {
-            showDialogue(context: context, title: "Instructions", text: instructions);
-          }),
-          SettingTitle(title: "Debug"),
-          Setting(
-            title: "Verbose Mode",
-            desc: "Shows application logs in the console.",
-            text: settings!["verbose"] ? "On" : "Off",
-            action: () async {
-              bool? response = await showConfirmDialogue(context: context, title: "Turn on Verbose Mode?", onOff: true);
-              if (response == null) {
-                return;
+      body: settings == null ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
+        child: Column(
+          children: [
+            AboutSettings(context: context, version: version, beta: beta, about: description, instructionsAction: () {
+              showDialogue(context: context, title: "Instructions", content: Text(instructions));
+            }),
+            SettingTitle(title: "Data"),
+            Setting(
+              title: "Clear History",
+              desc: "Clears all history. This cannot be undone.",
+              action: () async {
+                bool? response = await showConfirmDialogue(context: context, title: "Are you sure?", description: "Are you sure you want to clear your history? This cannot be undone.");
+                if (response == null) {
+                  return;
+                }
+                final SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setString("history", "[]");
+                refresh();
+                showConstantDialogue(context: context, title: "Reopen required", message: "Please close and reopen the app for your changes to take effect.");
+              },
+            ),
+            Setting(
+              title: "Clear Pins",
+              desc: "Clears all pins. This cannot be undone.",
+              action: () async {
+                bool? response = await showConfirmDialogue(context: context, title: "Are you sure?", description: "Are you sure you want to clear your pins? This cannot be undone.");
+                if (response == null) {
+                  return;
+                }
+                final SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setString("pins", "[]");
+                refresh();
+                showConstantDialogue(context: context, title: "Reopen required", message: "Please close and reopen the app for your changes to take effect.");
+              },
+            ),
+            Setting(
+              title: "Clear All Settings & Data",
+              desc: "Clears all settings, data, history, and pins. This cannot be undone.",
+              action: () async {
+                bool? response = await showConfirmDialogue(context: context, title: "Are you sure?", description: "Are you sure you want to clear all your settings, data, history, and pins? This cannot be undone.");
+                if (response == null) {
+                  return;
+                }
+                final SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.clear();
+                refresh();
+                showConstantDialogue(context: context, title: "Reopen required", message: "Please close and reopen the app for your changes to take effect.");
+              },
+            ),
+            SettingTitle(title: "Debug"),
+            Setting(
+              title: "Verbose Mode",
+              desc: "Shows application logs in the console.",
+              text: settings!["verbose"] ? "On" : "Off",
+              action: () async {
+                bool? response = await showConfirmDialogue(context: context, title: "Turn on Verbose Mode?", onOff: true);
+                if (response == null) {
+                  return;
+                }
+                final SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setBool("verbose", response);
+                refresh();
               }
-              final SharedPreferences prefs = await SharedPreferences.getInstance();
-              prefs.setBool("verbose", response);
-              refresh();
-            }
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
